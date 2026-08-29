@@ -68,23 +68,6 @@ graph TD
     class C highlight;
 ```
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Cron as GitHub Actions (Cron)
-    participant Gemini as Gemini API + Search
-    participant Notion as Notion API Workspace
-
-    Note over Cron, Notion: Nightly Execution Loop (10:00 PM PST)
-    Cron->+Gemini: Trigger autonomous research run
-    Gemini->Gemini: Execute web grounding & cross-verify sources
-    Gemini->Gemini: Generate SEO-Optimized Markdown
-    Gemini->+Notion: POST /v1/pages (Publish today's briefing)
-    Notion-->-Gemini: 200 OK (Page Created Successfully)
-    Gemini-->-Cron: Workflow completed successfully
-    Note over Cron, Notion: Loop goes idle for 24 hours
-```
-
 
 | Stage | Technology | Purpose |
 |-------|-----------|---------|
