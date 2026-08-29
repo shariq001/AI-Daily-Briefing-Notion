@@ -49,6 +49,43 @@ The report is researched using **real-time web-grounded search**, cross-verified
         📤  Notion API (Auto-Publish to Workspace)
 ```
 
+### 📊 System Architecture & Sequence Flow
+
+```mermaid
+graph TD
+    %% Styling
+    classDef default fill:#1e1e2e,stroke:#cba6f7,stroke-width:2px,color:#cdd6f4;
+    classDef highlight fill:#fab387,stroke:#e64553,stroke-width:2px,color:#11111b;
+    
+    A[⏰ GitHub Actions Cron<br>Daily Heartbeat at 10 PM PST] --> B[🔎 Gemini API Web Search<br>Grounding & Research]
+    B --> C{⚖️ Fact Check:<br>Multiple Sources Agree?}
+    C -- Yes, Verified --> D[✍️ Draft SEO Report<br>Headings + References]
+    C -- No / Unconfirmed --> E[❌ Discard / Flag Event]
+    D --> F[📤 Notion API<br>Publish New Page]
+    F --> G[😴 Loop Sleeps<br>Until Tomorrow 10 PM]
+    
+    class A,B,D,F,G default;
+    class C highlight;
+```
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Cron as GitHub Actions (Cron)
+    participant Gemini as Gemini API + Search
+    participant Notion as Notion API Workspace
+
+    Note over Cron, Notion: Nightly Execution Loop (10:00 PM PST)
+    Cron->+Gemini: Trigger autonomous research run
+    Gemini->Gemini: Execute web grounding & cross-verify sources
+    Gemini->Gemini: Generate SEO-Optimized Markdown
+    Gemini->+Notion: POST /v1/pages (Publish today's briefing)
+    Notion-->-Gemini: 200 OK (Page Created Successfully)
+    Gemini-->-Cron: Workflow completed successfully
+    Note over Cron, Notion: Loop goes idle for 24 hours
+```
+
+
 | Stage | Technology | Purpose |
 |-------|-----------|---------|
 | ⏰ **Heartbeat** | GitHub Actions (Cron) | Fires automatically every night — laptop-independent |
