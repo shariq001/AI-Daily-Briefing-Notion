@@ -1,0 +1,28 @@
+name: Daily AI Updates to Notion
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * *'   # 6:00 AM UTC = 10:00 PM PST (drifts to 11 PM during PDT)
+
+jobs:
+  post-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run the AI updates job
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+        run: python ai_updates.py
