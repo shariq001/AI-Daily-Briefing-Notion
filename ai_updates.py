@@ -32,7 +32,7 @@ Write the output as Markdown, structured like this:
 # (a short, SEO-friendly title for today's AI news)
 
 ## (Section heading per topic cluster, e.g. "Anthropic & Claude Updates")
-(2-4 short paragraphs or bullet points on what happened, written clearly and
+(short paragraphs or bullet points on what happened, written clearly and
 professionally)
 
 ... repeat sections for each topic area that had real news today ...
