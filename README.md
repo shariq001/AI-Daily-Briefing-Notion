@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🤖 AI Daily Briefing → Notion
+# AI Daily Briefing → Notion
 
 ### Autonomous AI Research & Publishing Loop
 
@@ -17,39 +17,39 @@
 
 ---
 
-## 📌 Overview
+## Overview
 
 **AI Daily Briefing → Notion** is an autonomous **loop-engineered AI agent** that runs every single night — with **no laptop, no manual trigger, and no human intervention** — to deliver a professionally formatted, source-verified summary of the day's most important developments in:
 
-- 🧠 **Artificial Intelligence**
-- 🤖 **AI Agents & Agentic AI**
-- 🚀 **Forward Deployed Engineering**
-- 🏢 **AI Companies** (Anthropic & other major labs)
-- 🔥 **Trending AI Industry News**
+- **Artificial Intelligence**
+- **AI Agents & Agentic AI**
+- **Forward Deployed Engineering**
+- **AI Companies** (Anthropic & other major labs)
+- **Trending AI Industry News**
 
 The report is researched using **real-time web-grounded search**, cross-verified across **multiple trustworthy sources**, and automatically published as a beautifully structured page inside a **Notion workspace** — every day, on schedule, forever.
 
-> 💡 **Why this matters:** This isn't a script that "guesses." It's an AI research pipeline built on verified loop-engineering principles — heartbeat, research, verification, and delivery — running entirely on cloud infrastructure.
+> **Why this matters:** This isn't a script that "guesses." It's an AI research pipeline built on verified loop-engineering principles — heartbeat, research, verification, and delivery — running entirely on cloud infrastructure.
 
 ---
 
-## ⚙️ How It Works
+## How It Works
 
 ```
-        🕒  GitHub Actions Cron (Daily Heartbeat)
+          GitHub Actions Cron (Daily Heartbeat)
                         │
                         ▼
-        🔎  Gemini API + Google Search Grounding
+          Gemini API + Google Search Grounding
              (Multi-source research & verification)
                         │
                         ▼
-        📝  SEO-Optimized Markdown Report Generation
+          SEO-Optimized Markdown Report Generation
                         │
                         ▼
-        📤  Notion API (Auto-Publish to Workspace)
+          Notion API (Auto-Publish to Workspace)
 ```
 
-### 📊 System Architecture & Sequence Flow
+### System Architecture & Sequence Flow
 
 ```mermaid
 graph TD
@@ -71,14 +71,14 @@ graph TD
 
 | Stage | Technology | Purpose |
 |-------|-----------|---------|
-| ⏰ **Heartbeat** | GitHub Actions (Cron) | Fires automatically every night — laptop-independent |
-| 🔬 **Research** | Gemini API + Search Grounding | Gathers real, verified information from multiple sources |
-| ✍️ **Content Generation** | Gemini (LLM) | Produces a clean, professional, SEO-optimized report |
-| 📬 **Publishing** | Notion API | Creates a new page automatically in your workspace |
+| **Heartbeat** | GitHub Actions (Cron) | Fires automatically every night — laptop-independent |
+| **Research** | Gemini API + Search Grounding | Gathers real, verified information from multiple sources |
+| **Content Generation** | Gemini (LLM) | Produces a clean, professional, SEO-optimized report |
+| **Publishing** | Notion API | Creates a new page automatically in your workspace |
 
 ---
 
-## ✨ Key Features
+## Key Features
 
 - ✅ **Fully Autonomous** — runs on a nightly schedule with zero manual effort
 - ✅ **Cloud-Native** — powered by GitHub Actions, independent of any personal device
@@ -90,54 +90,54 @@ graph TD
 
 ---
 
-## 🗓️ Example Output
+## Example Output
 
 Each report is automatically titled using the following format:
 
 ```
-📅 August 30, 2026: AI Updates
+August 30, 2026: AI Updates
 ```
 
 **Structure of every report:**
 
-1. 🏷️ SEO-friendly headline
-2. 📚 Topic-based sections (Anthropic updates, Agentic AI, Industry news, etc.)
-3. 🔗 A verified **References** section citing real sources
-4. 🖊️ Signature footer crediting the AI research agent
+1. SEO-friendly headline
+2. Topic-based sections (Anthropic updates, Agentic AI, Industry news, etc.)
+3. A verified **References** section citing real sources
+4. Signature footer crediting the AI research agent
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Category | Tools Used |
 |----------|-----------|
-| 🐍 Language | Python 3.11 |
-| ☁️ Automation | GitHub Actions |
-| 🧠 AI Model | Google Gemini API (with Search Grounding) |
-| 📥 Publishing | Notion API |
-| 🔐 Secrets Management | GitHub Encrypted Secrets |
+| Language | Python 3.11 |
+| Automation | GitHub Actions |
+| AI Model | Google Gemini API (with Search Grounding) |
+| Publishing | Notion API |
+| Secrets Management | GitHub Encrypted Secrets |
 
 ---
 
-## ⏰ Schedule Details
+## Schedule Details
 
 | Setting | Value |
 |---------|-------|
-| 🌍 Cron (UTC) | `0 6 * * *` |
-| 🕙 Local Equivalent | 10:00 PM PST |
-| ⚠️ Note | During PDT (Daylight Saving), this drifts by ~1 hour |
+| Cron (UTC) | `0 6 * * *` |
+| Local Equivalent | 10:00 PM PST |
+| Note | During PDT (Daylight Saving), this drifts by ~1 hour |
 
 ---
 
-## 🔒 Security Notes
+## Security Notes
 
-- 🚫 No API keys are ever hardcoded or committed to the repository
-- 🔐 All credentials are managed securely via **GitHub Encrypted Secrets**
-- 🕵️ Secrets are automatically masked in workflow logs
+- No API keys are ever hardcoded or committed to the repository
+- All credentials are managed securely via **GitHub Encrypted Secrets**
+- Secrets are automatically masked in workflow logs
 
 ---
 
-## 👨‍💻 Project By
+## Developed By
 
 <div align="center">
 
