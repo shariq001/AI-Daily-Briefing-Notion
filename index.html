@@ -289,7 +289,7 @@ async function workAt(index){
     await wait(3000);
   } else {
     ui.capSub.innerHTML = '';
-    for(let k=0;k<3;k++){ spawnWorkParticle(pos, stage.color); await wait(500); }
+    for(let k=0;k<3;k++){ spawnWorkParticle(pos, stage.color); await wait(1500); }
   }
   setProgress(index, 'done');
 }
@@ -303,7 +303,7 @@ async function runLoop(){
   const angles = STAGES.map((_,i)=> (i/STAGES.length)*Math.PI*2 );
 
   for(let i=0;i<STAGES.length;i++){
-    await travelTo(angles[i], 2600);
+    await travelTo(angles[i], 4500);
     await workAt(i);
   }
 
