@@ -281,12 +281,12 @@ async function workAt(index){
   if(stage.sub.length){
     ui.capSub.innerHTML = stage.sub.map(s=>`<span class="src" data-s="${s}">${s}</span>`).join('');
     for(const s of stage.sub){
-      await wait(750);
+      await wait(1200);
       spawnWorkParticle(pos, stage.color);
       const tag = ui.capSub.querySelector(`[data-s="${s}"]`);
       if(tag) tag.classList.add('verified');
     }
-    await wait(500);
+    await wait(3000);
   } else {
     ui.capSub.innerHTML = '';
     for(let k=0;k<3;k++){ spawnWorkParticle(pos, stage.color); await wait(500); }
