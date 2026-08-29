@@ -57,12 +57,12 @@ graph TD
     classDef default fill:#1e1e2e,stroke:#cba6f7,stroke-width:2px,color:#cdd6f4;
     classDef highlight fill:#fab387,stroke:#e64553,stroke-width:2px,color:#11111b;
     
-    A[⏰ GitHub Actions Cron<br>Daily Heartbeat at 10 PM PST] --> B[🔎 Gemini API Web Search<br>Grounding & Research]
-    B --> C{⚖️ Fact Check:<br>Multiple Sources Agree?}
-    C -- Yes, Verified --> D[✍️ Draft SEO Report<br>Headings + References]
-    C -- No / Unconfirmed --> E[❌ Discard / Flag Event]
-    D --> F[📤 Notion API<br>Publish New Page]
-    F --> G[😴 Loop Sleeps<br>Until Tomorrow 10 PM]
+    A[GitHub Actions Cron<br>Daily Heartbeat at 10 PM PST] --> B[Gemini API Web Search<br>Grounding & Research]
+    B --> C{Fact Check:<br>Multiple Sources Agree?}
+    C -- Yes, Verified --> D[Draft SEO Report<br>Headings + References]
+    C -- No / Unconfirmed --> E[Discard / Flag Event]
+    D --> F[Notion API<br>Publish New Page]
+    F --> G[Loop Sleeps<br>Until Tomorrow 10 PM]
     
     class A,B,D,F,G default;
     class C highlight;
