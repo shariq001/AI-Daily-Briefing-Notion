@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Daily Briefing — A Loop in Orbit</title>
+<meta name="description" content="A cinematic 3D visualization of an autonomous AI research loop — built by Muhammad Shariq.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#eef0fb; --dim:#8a91b5; --signal:#ffb454; --ok:#5fd7a8; --deep:#05070f;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;background:var(--deep);color:var(--ink);
+    font-family:'JetBrains Mono',monospace;overflow:hidden;}
+  #scene{position:fixed;inset:0;z-index:0;}
+
+  .ui{position:fixed;inset:0;z-index:2;pointer-events:none;
+    display:flex;flex-direction:column;justify-content:space-between;}
+
+  header{text-align:center;padding:2.4rem 1.5rem 0;}
+  .eyebrow{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--signal);
+    display:flex;align-items:center;justify-content:center;gap:.5rem;}
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--signal);
+    box-shadow:0 0 0 0 rgba(255,180,84,.6);animation:p 2.4s infinite;}
+  @keyframes p{0%{box-shadow:0 0 0 0 rgba(255,180,84,.5);}70%{box-shadow:0 0 0 9px rgba(255,180,84,0);}100%{box-shadow:0 0 0 0 rgba(255,180,84,0);}}
+  h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(1.5rem,4vw,2.3rem);
+    margin:.6rem 0 0;letter-spacing:-.01em;}
+  h1 span{color:var(--signal);}
+
+  .caption-wrap{display:flex;justify-content:center;padding:0 1.5rem;}
+  .caption{pointer-events:auto;max-width:560px;width:100%;background:rgba(10,14,28,.55);
+    backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.08);border-radius:16px;
+    padding:1.1rem 1.4rem;text-align:left;opacity:0;transform:translateY(10px);
+    transition:opacity .6s ease, transform .6s ease;}
+  .caption.show{opacity:1;transform:translateY(0);}
+  .caption .stage-label{color:var(--signal);font-size:.68rem;letter-spacing:.1em;
+    text-transform:uppercase;}
+  .caption .stage-text{color:var(--ink);font-size:.92rem;font-family:'Space Grotesk',sans-serif;
+    margin-top:.35rem;line-height:1.5;}
+  .caption .stage-sub{color:var(--dim);font-size:.75rem;margin-top:.5rem;
+    display:flex;flex-wrap:wrap;gap:.4rem;min-height:1.2rem;}
+  .src{border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:.15rem .55rem;
+    opacity:.3;transition:opacity .3s ease,border-color .3s ease,color .3s ease;}
+  .src.verified{opacity:1;border-color:var(--ok);color:var(--ok);}
+
+  .footerbar{display:flex;flex-direction:column;align-items:center;gap:1rem;
+    padding:0 1.5rem 2rem;pointer-events:auto;}
+  .progress{display:flex;gap:.5rem;}
+  .step{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.15);
+    transition:background .4s ease, box-shadow .4s ease;}
+  .step.on{background:var(--signal);box-shadow:0 0 10px rgba(255,180,84,.7);}
+  .step.done{background:var(--ok);}
+  .controls{display:flex;gap:.7rem;}
+  button{font-family:'JetBrains Mono',monospace;font-size:.75rem;background:transparent;
+    border:1px solid rgba(255,255,255,.18);color:var(--ink);padding:.6rem 1.3rem;
+    border-radius:30px;cursor:pointer;transition:.25s;}
+  button:hover{border-color:var(--signal);color:var(--signal);}
+  .credit{color:var(--dim);font-size:.72rem;text-align:center;}
+  .credit a{color:var(--signal);text-decoration:none;border-bottom:1px solid rgba(255,180,84,.4);}
+
+  @media (max-width:640px){ .caption{max-width:92vw;} }
+</style>
+</head>
+<body>
+
+<canvas id="scene"></canvas>
+
+<div class="ui">
+  <header>
+    <div class="eyebrow"><span class="dot"></span> Autonomous Loop · 10 PM PST · No Human Present</div>
+    <h1>Watch The Agent <span>Work In Orbit</span></h1>
+  </header>
+
+  <div class="caption-wrap">
+    <div class="caption" id="caption">
+      <div class="stage-label" id="capLabel">Standing by</div>
+      <div class="stage-text" id="capText">Press start to begin tonight's run. The agent will orbit through each stage of the loop, in real sequence.</div>
+      <div class="stage-sub" id="capSub"></div>
+    </div>
+  </div>
+
+  <div class="footerbar">
+    <div class="progress" id="progress"></div>
+    <div class="controls">
+      <button id="playBtn">▶ Start tonight's run</button>
+      <button id="resetBtn" disabled>↺ Reset</button>
+    </div>
+    <div class="credit">
+      Built by <strong>Muhammad Shariq</strong> — Loop Engineering project ·
+      <a href="https://www.linkedin.com/in/muhammad---shariq" target="_blank" rel="noopener">LinkedIn ↗</a>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* ---------- Scene setup ---------- */
+const canvas = document.getElementById('scene');
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:false});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(innerWidth, innerHeight);
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x05070f, 0.028);
+
+const camera = new THREE.PerspectiveCamera(45, innerWidth/innerHeight, 0.1, 200);
+let camAngle = 0;
+const camRadius = 15, camHeight = 7;
+
+/* Starfield */
+{
+  const geo = new THREE.BufferGeometry();
+  const N = 900, pos = new Float32Array(N*3);
+  for(let i=0;i<N;i++){
+    const r = 40 + Math.random()*60;
+    const theta = Math.random()*Math.PI*2, phi = Math.acos(2*Math.random()-1);
+    pos[i*3]   = r*Math.sin(phi)*Math.cos(theta);
+    pos[i*3+1] = r*Math.cos(phi);
+    pos[i*3+2] = r*Math.sin(phi)*Math.sin(theta);
+  }
+  geo.setAttribute('position', new THREE.BufferAttribute(pos,3));
+  const mat = new THREE.PointsMaterial({color:0x8a91b5, size:0.09, transparent:true, opacity:.7});
+  scene.add(new THREE.Points(geo, mat));
+}
+
+/* Glow sprite texture (soft radial gradient), used for all glows */
+function glowTexture(hex){
+  const c = document.createElement('canvas'); c.width=c.height=128;
+  const ctx = c.getContext('2d');
+  const g = ctx.createRadialGradient(64,64,0,64,64,64);
+  g.addColorStop(0, hex+'ff'); g.addColorStop(.4, hex+'88'); g.addColorStop(1, hex+'00');
+  ctx.fillStyle = g; ctx.fillRect(0,0,128,128);
+  return new THREE.CanvasTexture(c);
+}
+function makeGlow(hex, size){
+  const mat = new THREE.SpriteMaterial({map:glowTexture(hex), transparent:true, blending:THREE.AdditiveBlending, depthWrite:false});
+  const sp = new THREE.Sprite(mat); sp.scale.set(size,size,1); return sp;
+}
+
+/* ---------- Central Notion core ---------- */
+const coreGroup = new THREE.Group(); scene.add(coreGroup);
+const coreGeo = new THREE.IcosahedronGeometry(1.15, 1);
+const coreMat = new THREE.MeshBasicMaterial({color:0xffffff, wireframe:true, transparent:true, opacity:.35});
+const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+coreGroup.add(coreMesh);
+const coreGlow = makeGlow('#ffb454', 4.5); coreGroup.add(coreGlow);
+const coreCenterGlow = makeGlow('#ffffff', 1.6); coreGroup.add(coreCenterGlow);
+
+/* Orbit ring */
+const ringGeo = new THREE.TorusGeometry(6, 0.01, 8, 128);
+const ringMat = new THREE.MeshBasicMaterial({color:0x8a91b5, transparent:true, opacity:.35});
+const ring = new THREE.Mesh(ringGeo, ringMat);
+ring.rotation.x = Math.PI/2;
+scene.add(ring);
+
+/* ---------- Stage nodes on the ring ---------- */
+const STAGES = [
+  {label:'Heartbeat', color:'#ffb454', text:'The scheduled heartbeat fires on GitHub\u2019s servers. No laptop involved \u2014 a fresh cloud runner spins up on schedule.', sub:[]},
+  {label:'Research', color:'#7aa2ff', text:'The agent gathers today\u2019s AI news using live web search, casting a wide net before checking anything.', sub:[]},
+  {label:'Verify Sources', color:'#5fd7a8', text:'Each claim is checked against multiple independent sources before it is trusted.', sub:['TechCrunch','Anthropic Blog','The Verge','Google AI Blog']},
+  {label:'Draft Report', color:'#e39aff', text:'A clean, SEO-structured report is written \u2014 headings, sections, and a references list, from only what was verified.', sub:[]},
+  {label:'Publish', color:'#ff8a8a', text:'The finished page flows into Notion \u2014 a new dated entry appears, ready for the morning.', sub:[]},
+];
+
+const nodeGroup = new THREE.Group(); scene.add(nodeGroup);
+const nodeMeshes = [];
+const R = 6;
+STAGES.forEach((s, i)=>{
+  const angle = (i / STAGES.length) * Math.PI*2;
+  const x = Math.cos(angle)*R, z = Math.sin(angle)*R;
+  const geo = new THREE.IcosahedronGeometry(0.32, 0);
+  const mat = new THREE.MeshBasicMaterial({color:s.color, wireframe:true});
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.position.set(x, 0, z);
+  const glow = makeGlow(s.color, 1.1);
+  mesh.add(glow);
+  nodeGroup.add(mesh);
+  nodeMeshes.push(mesh);
+});
+
+/* ---------- The traveling agent ---------- */
+const agentGroup = new THREE.Group();
+const agentCore = new THREE.Mesh(
+  new THREE.SphereGeometry(0.14, 16, 16),
+  new THREE.MeshBasicMaterial({color:0xffffff})
+);
+agentGroup.add(agentCore);
+agentGroup.add(makeGlow('#ffffff', 1.4));
+scene.add(agentGroup);
+
+/* Traveled arc trail */
+const trailMat = new THREE.LineBasicMaterial({color:0xffb454, transparent:true, opacity:.8});
+let trailLine = new THREE.Line(new THREE.BufferGeometry(), trailMat);
+scene.add(trailLine);
+function drawTrail(fromAngle, toAngle){
+  const pts = [];
+  const steps = 40;
+  for(let i=0;i<=steps;i++){
+    const a = fromAngle + (toAngle-fromAngle) * (i/steps);
+    pts.push(new THREE.Vector3(Math.cos(a)*R, 0, Math.sin(a)*R));
+  }
+  trailLine.geometry.dispose();
+  trailLine.geometry = new THREE.BufferGeometry().setFromPoints(pts);
+}
+
+/* Work particles spawned at a node while the agent is "doing work" */
+let workParticles = [];
+function spawnWorkParticle(pos, color){
+  const glow = makeGlow(color, 0.4);
+  glow.position.copy(pos);
+  glow.userData.life = 1.0;
+  glow.userData.vel = new THREE.Vector3((Math.random()-.5)*0.02, Math.random()*0.03+0.01, (Math.random()-.5)*0.02);
+  scene.add(glow);
+  workParticles.push(glow);
+}
+
+scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+
+/* ---------- Animation state machine ---------- */
+const ui = {
+  caption: document.getElementById('caption'),
+  capLabel: document.getElementById('capLabel'),
+  capText: document.getElementById('capText'),
+  capSub: document.getElementById('capSub'),
+  progress: document.getElementById('progress'),
+  playBtn: document.getElementById('playBtn'),
+  resetBtn: document.getElementById('resetBtn'),
+};
+STAGES.forEach((_, i)=>{
+  const d = document.createElement('div'); d.className='step'; d.id='step'+i;
+  ui.progress.appendChild(d);
+});
+
+let running = false;
+let currentAngle = 0;
+let clock = new THREE.Clock();
+
+function easeInOutCubic(t){ return t<0.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2; }
+async function wait(ms){ return new Promise(r=>setTimeout(r, ms)); }
+
+function setCaption(label, text){
+  ui.caption.classList.remove('show');
+  setTimeout(()=>{
+    ui.capLabel.textContent = label;
+    ui.capText.textContent = text;
+    ui.caption.classList.add('show');
+  }, 200);
+}
+function setProgress(i, state){
+  const el = document.getElementById('step'+i);
+  el.classList.remove('on','done');
+  if(state) el.classList.add(state);
+}
+
+async function travelTo(targetAngle, durationMs){
+  const start = currentAngle;
+  let delta = targetAngle - start;
+  while(delta > Math.PI) delta -= Math.PI*2;
+  while(delta < -Math.PI) delta += Math.PI*2;
+  const t0 = performance.now();
+  return new Promise(resolve=>{
+    function step(){
+      const t = Math.min(1, (performance.now()-t0)/durationMs);
+      const eased = easeInOutCubic(t);
+      currentAngle = start + delta*eased;
+      drawTrail(start, currentAngle);
+      if(t<1) requestAnimationFrame(step); else resolve();
+    }
+    requestAnimationFrame(step);
+  });
+}
+
+async function workAt(index){
+  const stage = STAGES[index];
+  const pos = nodeMeshes[index].position;
+  setCaption(stage.label, stage.text);
+  setProgress(index, 'on');
+
+  if(stage.sub.length){
+    ui.capSub.innerHTML = stage.sub.map(s=>`<span class="src" data-s="${s}">${s}</span>`).join('');
+    for(const s of stage.sub){
+      await wait(750);
+      spawnWorkParticle(pos, stage.color);
+      const tag = ui.capSub.querySelector(`[data-s="${s}"]`);
+      if(tag) tag.classList.add('verified');
+    }
+    await wait(500);
+  } else {
+    ui.capSub.innerHTML = '';
+    for(let k=0;k<3;k++){ spawnWorkParticle(pos, stage.color); await wait(500); }
+  }
+  setProgress(index, 'done');
+}
+
+async function runLoop(){
+  if(running) return;
+  running = true;
+  ui.playBtn.disabled = true;
+  ui.resetBtn.disabled = true;
+
+  const angles = STAGES.map((_,i)=> (i/STAGES.length)*Math.PI*2 );
+
+  for(let i=0;i<STAGES.length;i++){
+    await travelTo(angles[i], 2600);
+    await workAt(i);
+  }
+
+  setCaption('Sleeping', 'Tonight\u2019s run is complete. The loop goes quiet until the same time tomorrow.');
+  await travelTo(0, 1400);
+  await new Promise(res=>{
+    const t0 = performance.now(), dur=1200, startPos = agentGroup.position.clone();
+    function step(){
+      const t = Math.min(1,(performance.now()-t0)/dur);
+      agentGroup.position.lerpVectors(startPos, new THREE.Vector3(0,0,0), easeInOutCubic(t));
+      coreGlow.scale.setScalar(4.5 + Math.sin(t*Math.PI)*2.5);
+      if(t<1) requestAnimationFrame(step); else res();
+    }
+    requestAnimationFrame(step);
+  });
+
+  ui.resetBtn.disabled = false;
+  running = false;
+}
+
+function resetLoop(){
+  STAGES.forEach((_,i)=>setProgress(i, null));
+  setCaption('Standing by', 'Press start to begin tonight\u2019s run. The agent will orbit through each stage of the loop, in real sequence.');
+  ui.capSub.innerHTML = '';
+  currentAngle = 0;
+  agentGroup.position.set(R,0,0);
+  trailLine.geometry.dispose();
+  trailLine.geometry = new THREE.BufferGeometry();
+  coreGlow.scale.setScalar(4.5);
+  ui.playBtn.disabled = false;
+  ui.resetBtn.disabled = true;
+}
+
+ui.playBtn.addEventListener('click', runLoop);
+ui.resetBtn.addEventListener('click', resetLoop);
+
+/* ---------- Render loop ---------- */
+function animate(){
+  requestAnimationFrame(animate);
+  const t = clock.getElapsedTime();
+
+  camAngle += 0.0016;
+  camera.position.set(Math.cos(camAngle)*camRadius, camHeight + Math.sin(t*0.15)*0.6, Math.sin(camAngle)*camRadius);
+  camera.lookAt(0,0,0);
+
+  coreMesh.rotation.y += 0.003; coreMesh.rotation.x += 0.0015;
+  coreCenterGlow.scale.setScalar(1.4 + Math.sin(t*2)*0.15);
+
+  nodeMeshes.forEach((m,i)=>{ m.rotation.y += 0.01; m.position.y = Math.sin(t*0.8 + i)*0.15; });
+
+  if(running){
+    agentGroup.position.set(Math.cos(currentAngle)*R, Math.sin(t*3)*0.08, Math.sin(currentAngle)*R);
+  }
+
+  workParticles.forEach(p=>{
+    p.userData.life -= 0.012;
+    p.position.add(p.userData.vel);
+    p.material.opacity = Math.max(0, p.userData.life);
+    p.scale.setScalar(0.4 * (0.5+p.userData.life));
+  });
+  workParticles = workParticles.filter(p=>{
+    if(p.userData.life <= 0){ scene.remove(p); return false; }
+    return true;
+  });
+
+  renderer.render(scene, camera);
+}
+agentGroup.position.set(R,0,0);
+animate();
+
+addEventListener('resize', ()=>{
+  camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+</script>
+</body>
+</html>
