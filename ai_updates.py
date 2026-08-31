@@ -27,20 +27,23 @@ Rules:
   unconfirmed.
 - Do not invent facts, dates, or figures. If you are not confident something is
   accurate, leave it out rather than guess.
+- Focus on news from the last 24 hours. If there is no news in a category, skip it.
+- We will only show new update for daily news, for 31 August 2026 we will show that days news, and for 30 August 2026 we will show that days news on 31 August 2026 post, and so on. 
+- The post must be a summary of the news, not a full article. Keep it concise, clear, and professional. The readers will probably spend 2 - 3 minutes reading the post, so make it easy to skim and digest. 
 
 Write the output as Markdown, structured like this:
 # (a short, SEO-friendly title for today's AI news)
 
 ## (Section heading per topic cluster, e.g. "Anthropic & Claude Updates")
-(short paragraphs or bullet points on what happened, written clearly and
-professionally)
+(short paragraph or bullet points on what happened, written clearly and
+professionally, most preferably in bullet points. Include dates, names, and other relevant details. Use proper headings, subheadings, and bullet points to make the report easy to read. Don't go too much deep into technical details — the goal is to summarize the news for a general audience. don't go off-topic. If there is no news in a category, skip it. Keep short paragraphs and bullet points concise, clear, and professional. Avoid filler content. Don't go for more than 2 paragraphs per section.)
 
 ... repeat sections for each topic area that had real news today ...
 
 ## References
 - (Source name) — (full URL)
 - (Source name) — (full URL)
-(list every distinct source actually used)
+(list every distinct source actually used, with the full URL, in a bulleted list. If you used multiple articles from the same source, list each article separately. and mention for which topic is that url points to. If you used a source for multiple topics, list it once per topic.)
 
 Keep the tone professional, clear, and well-organized. Do not pad with filler
 if there isn't real news in a category — a shorter, accurate report is better
