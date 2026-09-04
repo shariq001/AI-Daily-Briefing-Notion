@@ -58,7 +58,31 @@ def get_report():
             tools=[types.Tool(google_search=types.GoogleSearch())]
         ),
     )
-    return response.text
+
+    # Don't trust response.text blindly — inspect what actually came back
+    if not response.candidates:
+        raise RuntimeError("Gemini returned no candidates at all — check API status/quota.")
+
+    candidate = response.candidates[0]
+    finish_reason = getattr(candidate, "finish_reason", None)
+
+    if not candidate.content or not candidate.content.parts:
+        raise RuntimeError(
+            f"Gemini returned an empty response. finish_reason={finish_reason}. "
+            "This usually means content was blocked, or the model returned only "
+            "tool-call parts with no final text."
+        )
+
+    text_parts = [p.text for p in candidate.content.parts if getattr(p, "text", None)]
+    full_text = "\n".join(text_parts).strip()
+
+    if not full_text:
+        raise RuntimeError(
+            f"Gemini returned parts but none contained usable text. "
+            f"finish_reason={finish_reason}, parts={candidate.content.parts}"
+        )
+
+    return full_text
 
 
 def markdown_to_notion_blocks(markdown_text):
